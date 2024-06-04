@@ -1,4 +1,4 @@
-# Plantinha Interativa
+# Plantinha IOT Interativa
 
 ## Descrição do Projeto
 
