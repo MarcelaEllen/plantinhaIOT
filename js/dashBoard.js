@@ -1,9 +1,40 @@
+async function fetchData() {
+    const response = await fetch('https://plantinhaapp.azurewebsites.net/users');
+    const data = await response.json();
+    return data;
+}
+
+function getLastNData(data, n = 5) {
+    return data.slice(0, n).reverse();
+}
+
+function updateChartData(data) {
+    const labels = getLastNData(data).map(item => new Date(item.data).toLocaleTimeString());
+    const temperatureData = getLastNData(data.map(item => item.temperatura));
+    const humidityData = getLastNData(data.map(item => item.umidade));
+    const lightData = getLastNData(data.map(item => item.luminosidade));
+
+    dataTemperature.labels = labels;
+    dataTemperature.datasets[0].data = temperatureData;
+
+    dataHumidity.labels = labels;
+    dataHumidity.datasets[0].data = humidityData;
+
+    dataLight.labels = labels;
+    dataLight.datasets[0].data = lightData;
+
+    chartTemperature.update();
+    chartHumidity.update();
+    chartLight.update();
+}
+
+
 // Dados de exemplo para os gráficos
 const dataTemperature = {
-    labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00'],
+    labels: [],
     datasets: [{
         label: 'Temperatura Cº',
-        data: [22, 23, 24, 25, 26, 25],
+        data: [],
         fill: false,
         borderColor: '#ff5733',
         tension: 0.1
@@ -11,10 +42,10 @@ const dataTemperature = {
 };
 
 const dataHumidity = {
-    labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00'],
+    labels: [],
     datasets: [{
         label: 'Umidade %',
-        data: [40, 42, 43, 45, 46, 44],
+        data: [],
         fill: false,
         borderColor: '#007bff',
         tension: 0.1
@@ -22,10 +53,10 @@ const dataHumidity = {
 };
 
 const dataLight = {
-    labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00'],
+    labels: [],
     datasets: [{
         label: 'Luminosidade',
-        data: [800, 780, 760, 740, 720, 700],
+        data: [],
         fill: false,
         borderColor: '#ffc107',
         tension: 0.1
@@ -110,3 +141,4 @@ document.getElementById('lightBtn').addEventListener('click', function() {
     document.getElementById('myChartLight').style.display = 'block';
 });
 
+fetchData().then(updateChartData);
