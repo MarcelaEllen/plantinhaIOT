@@ -4,6 +4,8 @@
 
 A **Plantinha Interativa** é um projeto de IoT (Internet das Coisas) que visa criar um ambiente propício para o crescimento de plantas, com um charmoso toque regional inspirado no Nordeste do Brasil. Com um design que lembra um cacto vestindo um autêntico chapéu nordestino e com expressões típicas da região, a Plantinha Interativa traz um ar descontraído e acolhedor ao ambiente.
 
+## Acesse aqui: https://plantinhainterativa.azurewebsites.net/
+
 ## Componentes Principais
 
 Os componentes principais do projeto são:
