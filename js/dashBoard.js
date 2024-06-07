@@ -1,18 +1,21 @@
 async function fetchData() {
-    const response = await fetch('https://plantinhaapp.azurewebsites.net/users');
+    const response = await fetch('https://plantinhaapp.azurewebsites.net/users/cinco');
     const data = await response.json();
     return data;
 }
 
-function getLastNData(data, n = 5) {
-    return data.slice(0, n).reverse();
-}
-
 function updateChartData(data) {
-    const labels = getLastNData(data).map(item => new Date(item.data).toLocaleTimeString());
-    const temperatureData = getLastNData(data.map(item => item.temperatura));
-    const humidityData = getLastNData(data.map(item => item.umidade));
-    const lightData = getLastNData(data.map(item => item.luminosidade));
+    // Ordenar os dados pela data em ordem crescente
+    data.sort((a, b) => new Date(a.data) - new Date(b.data));
+
+    // Obter os últimos 5 dados
+    const lastFiveData = data.slice(-5);
+
+    // Formatar as datas para exibição
+    const labels = lastFiveData.map(item => item.data.slice(11, 19));
+    const temperatureData = lastFiveData.map(item => item.temperatura);
+    const humidityData = lastFiveData.map(item => item.umidade);
+    const lightData = lastFiveData.map(item => item.luminosidade);
 
     dataTemperature.labels = labels;
     dataTemperature.datasets[0].data = temperatureData;
@@ -27,7 +30,6 @@ function updateChartData(data) {
     chartHumidity.update();
     chartLight.update();
 }
-
 
 // Dados de exemplo para os gráficos
 const dataTemperature = {
@@ -63,9 +65,18 @@ const dataLight = {
     }]
 };
 
-// Opções para os novos gráficos (olhar na doc do chart.js se da pra usar, se fica legal e tal)
+// Opções para os gráficos
 const optionsTemperature = {
     scales: {
+        xAxes: [{
+            type: 'time',
+            time: {
+                unit: 'second',
+                displayFormats: {
+                    second: 'HH:mm:ss'
+                }
+            }
+        }],
         yAxes: [{
             ticks: {
                 beginAtZero: false
@@ -76,6 +87,15 @@ const optionsTemperature = {
 
 const optionsHumidity = {
     scales: {
+        xAxes: [{
+            type: 'time',
+            time: {
+                unit: 'second',
+                displayFormats: {
+                    second: 'HH:mm:ss'
+                }
+            }
+        }],
         yAxes: [{
             ticks: {
                 beginAtZero: false
@@ -86,6 +106,15 @@ const optionsHumidity = {
 
 const optionsLight = {
     scales: {
+        xAxes: [{
+            type: 'time',
+            time: {
+                unit: 'second',
+                displayFormats: {
+                    second: 'HH:mm:ss'
+                }
+            }
+        }],
         yAxes: [{
             ticks: {
                 beginAtZero: true
@@ -117,7 +146,7 @@ const chartLight = new Chart(ctxLight, {
     options: optionsLight
 });
 
-// deixa o de umidade como default
+// Deixa o gráfico de umidade como padrão
 document.getElementById('myChartTemperature').style.display = 'none';
 document.getElementById('myChartHumidity').style.display = 'block';
 document.getElementById('myChartLight').style.display = 'none';
